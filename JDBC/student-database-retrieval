@@ -1,0 +1,66 @@
+// form.html
+
+<form action="serv1" method="get">
+Dept : <input type="text" name="dept"/><br>
+<input type="submit" value="submit"/>
+</form>
+
+// DeptDetails.java
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.*;
+import java.sql.*;
+public class DeptDetails extends HttpServlet
+{
+public void doGet(HttpServletRequest req,HttpServletResponse res) throws IOException,ServletException,SQLException
+{
+String JDBC_DRIVER="com.mysql.jdbc.Driver";
+String DB_URL="jdbc:mysql://172.20.0.6:2435/test";
+String USER="root";
+String PASS="cse2";
+res.setContentType("text/html");
+PrintWriter out =res.getWriter();
+CLass.forName("com.mysql.jdbc.Driver");
+Connection con=DriverManager.getConnection(DB_URL,USER,PASS);
+String dept=req.getParameter("dept");
+Statement stmt=con.createStatement();
+String sql="select* from emp where dept=" + dept ;
+ResultSet rs=stmt.executeQuery(sql);
+out.println("<table border="2" >");
+out.println("<tr>");
+out.println("<th>Name</th>");
+out.println("<th>Dept</th>");
+out.println("</tr>");
+while(rs.next())
+{
+String ename=rs.getString("name");
+String dep=rs.getString("dept");
+out.println("<tr>");
+out.println("<td>"+ename+"</td>");
+out.println("<td>"+dep+"</td>");
+out.println("</tr>");
+}
+out.println("</table>");
+out.close();
+stmt.close();
+con.close();
+}
+}
+}
+
+//web.xml
+<web-app>
+<welcome-file-list>
+<welcome-file> form.html</welcome-file>
+</welcome-file-list>
+<servlet>
+<servlet-name>DeptDetails</servlet-name>
+<servlet-class>DeptDetails</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-class>DeptDetails</servlet-class>
+<url-pattern>/serv1</url-pattern>
+</servlet-mapping>
+</web-app>
