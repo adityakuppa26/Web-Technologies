@@ -1,0 +1,51 @@
+// report.html
+
+<html>
+<form action="student.jsp" method="post">
+Dept : <input type="text" name="dept"/>
+<br>
+<input type="submit" value="submit"/>
+</form>
+</html>
+
+// student.jsp
+
+<%@ page import="java.sql.*" %>
+<%@ page import="javax.sql.*" %>
+<%@ page import="javax.servlet.*" %>
+<%@ page import="javax.servlet.http.*" %>
+<%@ page import="java.io.*" %>
+
+<h1> Dept wise student details </h1>
+
+<%
+Class.forName("com.mysql.jdbc.Driver");
+String db_url =" jdbc:mysql://172.20.0.9:3452/test";
+String username="root";
+String password="cse2";
+Connection con=null;
+con=DriverManager.getConnection(db_url,username,password);
+Statement stmt = con.createStatement();
+String n= req.getParameter("dept");
+String sql= " select* from emp where dept="+n;
+ResultSet rs = stmt.executeQuery(sql);
+res.setContentType("text/html");
+PrintWriter out=res.getWriter();
+out.println("<table border="2" >");
+out.println("<tr>");
+out.println("<th> Name </th>");
+out.println("<th> Dept </th>");
+out.println("</tr>");
+while( rs.next())
+{
+String ename= rs.getString("name");
+String dep=rs.getString("dept");
+out.println("<tr>");
+out.println("<td>" + ename + "</td>");
+out.println("<td>" + dep + "</td>");
+out.println("</tr>");
+}
+out.println("</table>");
+out.close();
+
+%>
